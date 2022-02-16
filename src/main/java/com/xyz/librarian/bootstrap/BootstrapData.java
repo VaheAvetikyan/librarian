@@ -8,11 +8,14 @@ import com.xyz.librarian.repositories.AddressRepository;
 import com.xyz.librarian.repositories.AuthorRepository;
 import com.xyz.librarian.repositories.BookRepository;
 import com.xyz.librarian.repositories.PublisherRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BootstrapData implements CommandLineRunner {
+    private final Logger LOGGER = LogManager.getLogger(BootstrapData.class);
 
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
@@ -28,7 +31,7 @@ public class BootstrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        System.out.println("Bootstrap Started");
+        LOGGER.info("Bootstrap Started");
 
         Author ernest = new Author("Ernest", "Hemingway");
         Book fiesta = new Book("The Sun Also Rises", "9780020518709");
@@ -59,8 +62,8 @@ public class BootstrapData implements CommandLineRunner {
         bookRepository.save(fiesta);
         publisherRepository.save(zangak);
 
-        System.out.println("Number of books: " + bookRepository.count());
-        System.out.println("Number of Publishers: " + publisherRepository.count());
-        System.out.println("Publisher " + zangak.getName() + " - number of books: " + zangak.getBooks().size());
+        LOGGER.info("Number of books: {}", bookRepository.count());
+        LOGGER.info("Number of Publishers: {}", publisherRepository.count());
+        LOGGER.info("Publisher {} - number of books: {}", zangak.getName(), zangak.getBooks().size());
     }
 }

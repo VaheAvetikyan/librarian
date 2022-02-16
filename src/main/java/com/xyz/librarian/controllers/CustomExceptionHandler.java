@@ -1,5 +1,7 @@
 package com.xyz.librarian.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +14,14 @@ import java.util.Map;
 
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
+    private final Logger LOGGER = LogManager.getLogger(CustomExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> errorThrown(Exception exception) {
         Map<String, String> errorMessage = new LinkedHashMap<>();
         errorMessage.put("message", exception.getMessage());
         errorMessage.put("details", "Something went wrong");
+        LOGGER.error("Error caught: {}", exception.getMessage());
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
