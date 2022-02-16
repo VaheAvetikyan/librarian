@@ -30,6 +30,18 @@ public class BookService {
         return bookOptional.get();
     }
 
+    public Book addBook(Book book) {
+        return bookRepository.save(book);
+    }
+
+    public Book updateBook(Book book) {
+        return bookRepository.save(book);
+    }
+
+    public void removeBook(Book book) {
+        bookRepository.delete(book);
+    }
+
     public BookDTO convertToDto(Book book) {
         BookDTO bookDTO = new BookDTO();
         bookDTO.setId(book.getId());

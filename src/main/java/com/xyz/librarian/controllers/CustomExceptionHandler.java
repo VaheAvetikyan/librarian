@@ -2,8 +2,6 @@ package com.xyz.librarian.controllers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +20,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         errorMessage.put("message", exception.getMessage());
         errorMessage.put("details", "Something went wrong");
         LOGGER.error("Error caught: {}", exception.getMessage());
-        return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.internalServerError().body(errorMessage);
     }
 }

@@ -30,6 +30,18 @@ public class AuthorService {
         return authorOptional.get();
     }
 
+    public Author addAuthor(Author author) {
+        return authorRepository.save(author);
+    }
+
+    public Author updateAuthor(Author author) {
+        return authorRepository.save(author);
+    }
+
+    public void removeAuthor(Author author) {
+        authorRepository.delete(author);
+    }
+
     public AuthorDTO convertToDto(Author author) {
         AuthorDTO authorDTO = new AuthorDTO();
         authorDTO.setId(author.getId());
