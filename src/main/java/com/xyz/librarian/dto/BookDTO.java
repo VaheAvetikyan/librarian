@@ -1,6 +1,10 @@
 package com.xyz.librarian.dto;
 
+import com.xyz.librarian.domain.Author;
+import com.xyz.librarian.domain.Book;
+
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BookDTO {
     private Long id;
@@ -8,7 +12,16 @@ public class BookDTO {
     private String isbn;
     private Set<Long> authors;
 
-    public BookDTO() {
+    private BookDTO() {
+    }
+
+    public static BookDTO from(Book book) {
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setId(book.getId());
+        bookDTO.setTitle(book.getTitle());
+        bookDTO.setIsbn(book.getIsbn());
+        bookDTO.setAuthors(book.getAuthors().stream().mapToLong(Author::getId).boxed().collect(Collectors.toSet()));
+        return bookDTO;
     }
 
     public Long getId() {
