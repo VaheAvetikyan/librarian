@@ -28,7 +28,7 @@ public class AuthorController {
     public List<AuthorDTO> getAuthors() {
         Iterable<Author> authors = authorService.getAuthors();
         List<AuthorDTO> authorDtoList = new ArrayList<>();
-        authors.forEach(author -> authorDtoList.add(authorService.convertToDto(author)));
+        authors.forEach(author -> authorDtoList.add(AuthorDTO.from(author)));
         authorDtoList.sort(Comparator.comparing(AuthorDTO::getLastName));
         LOGGER.info("Authors retrieved [{}]",
                 authorDtoList.stream()
@@ -40,23 +40,26 @@ public class AuthorController {
     @GetMapping("/{id}")
     public AuthorDTO getAuthor(@PathVariable long id) {
         Author author = authorService.getAuthorByID(id);
-        return authorService.convertToDto(author);
+        return AuthorDTO.from(author);
     }
 
     @PostMapping
     public ResponseEntity<AuthorDTO> addAuthor(@RequestBody Author author) {
         Author created = authorService.addAuthor(author);
-        return ResponseEntity.ok(authorService.convertToDto(created));
+        return ResponseEntity.ok(AuthorDTO.from(created));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<AuthorDTO> updateAuthor(@RequestBody Author author, @PathVariable long id) {
-        if (authorService.getAuthorByID(id) == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            authorService.getAuthorByID(id);
+        } catch (RuntimeException e) {
+            LOGGER.debug("Author with id {} does not exist", id);
+            throw e;
         }
         author.setId(id);
         Author updated = authorService.updateAuthor(author);
-        return ResponseEntity.ok(authorService.convertToDto(updated));
+        return ResponseEntity.ok(AuthorDTO.from(updated));
     }
 
     @DeleteMapping("/{id}")

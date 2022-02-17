@@ -36,7 +36,7 @@ public class BootstrapData implements CommandLineRunner {
         Author ernest = new Author("Ernest", "Hemingway");
         Book fiesta = new Book("The Sun Also Rises", "9780020518709");
         ernest.getBooks().add(fiesta);
-        fiesta.getAuthors().add(ernest);
+        fiesta.addToAuthors(ernest);
 
         authorRepository.save(ernest);
         bookRepository.save(fiesta);
@@ -44,7 +44,7 @@ public class BootstrapData implements CommandLineRunner {
         Author martin = new Author("Bob", "Martin");
         Book cleanCode = new Book("Clean Code", "9780132350884");
         martin.getBooks().add(cleanCode);
-        cleanCode.getAuthors().add(martin);
+        cleanCode.addToAuthors(martin);
 
         authorRepository.save(martin);
         bookRepository.save(cleanCode);

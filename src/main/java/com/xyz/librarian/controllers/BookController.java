@@ -28,7 +28,7 @@ public class BookController {
     public List<BookDTO> getBooks() {
         Iterable<Book> books = bookService.getBooks();
         List<BookDTO> bookDTOList = new ArrayList<>();
-        books.forEach(book -> bookDTOList.add(bookService.convertToDto(book)));
+        books.forEach(book -> bookDTOList.add(BookDTO.from(book)));
         bookDTOList.sort(Comparator.comparing(BookDTO::getTitle));
         LOGGER.debug("Books retrieved [{}]",
                 bookDTOList.stream()
@@ -41,7 +41,7 @@ public class BookController {
     public List<BookDTO> getBooks(@RequestParam("page") int page, @RequestParam("size") int size) {
         Iterable<Book> books = bookService.getBooks(page, size);
         List<BookDTO> bookDTOList = new ArrayList<>();
-        books.forEach(book -> bookDTOList.add(bookService.convertToDto(book)));
+        books.forEach(book -> bookDTOList.add(BookDTO.from(book)));
         bookDTOList.sort(Comparator.comparing(BookDTO::getTitle));
         return bookDTOList;
     }
@@ -49,13 +49,13 @@ public class BookController {
     @GetMapping("/{id}")
     public BookDTO getBook(@PathVariable long id) {
         Book book = bookService.getBookByID(id);
-        return bookService.convertToDto(book);
+        return BookDTO.from(book);
     }
 
     @PostMapping
     public ResponseEntity<BookDTO> addBook(@RequestBody Book book) {
         Book created = bookService.addBook(book);
-        return ResponseEntity.ok(bookService.convertToDto(created));
+        return ResponseEntity.ok(BookDTO.from(created));
     }
 
     @PutMapping("/{id}")
@@ -65,7 +65,7 @@ public class BookController {
         }
         book.setId(id);
         Book updated = bookService.updateBook(book);
-        return ResponseEntity.ok(bookService.convertToDto(updated));
+        return ResponseEntity.ok(BookDTO.from(updated));
     }
 
     @DeleteMapping("/{id}")
