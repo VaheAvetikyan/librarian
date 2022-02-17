@@ -30,10 +30,19 @@ public class BookController {
         List<BookDTO> bookDTOList = new ArrayList<>();
         books.forEach(book -> bookDTOList.add(bookService.convertToDto(book)));
         bookDTOList.sort(Comparator.comparing(BookDTO::getTitle));
-        LOGGER.info("Books retrieved [{}]",
+        LOGGER.debug("Books retrieved [{}]",
                 bookDTOList.stream()
                         .map(BookDTO::getTitle)
                         .collect(Collectors.joining(", ")));
+        return bookDTOList;
+    }
+
+    @GetMapping(params = {"page", "size"})
+    public List<BookDTO> getBooks(@RequestParam("page") int page, @RequestParam("size") int size) {
+        Iterable<Book> books = bookService.getBooks(page, size);
+        List<BookDTO> bookDTOList = new ArrayList<>();
+        books.forEach(book -> bookDTOList.add(bookService.convertToDto(book)));
+        bookDTOList.sort(Comparator.comparing(BookDTO::getTitle));
         return bookDTOList;
     }
 
