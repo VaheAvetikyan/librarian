@@ -1,7 +1,9 @@
 package com.xyz.librarian.controllers;
 
+import com.xyz.librarian.domain.Author;
 import com.xyz.librarian.domain.Book;
 import com.xyz.librarian.dto.BookDTO;
+import com.xyz.librarian.services.AuthorService;
 import com.xyz.librarian.services.BookService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,9 +20,11 @@ import java.util.stream.Collectors;
 public class BookController {
     private final Logger LOGGER = LogManager.getLogger(BookController.class);
 
+    private final AuthorService authorService;
     private final BookService bookService;
 
-    public BookController(BookService bookService) {
+    public BookController(AuthorService authorService, BookService bookService) {
+        this.authorService = authorService;
         this.bookService = bookService;
     }
 
@@ -54,18 +58,35 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<BookDTO> addBook(@RequestBody Book book) {
+        if (book.getAuthors() != null) {
+            assignAuthorsToBook(book);
+        }
         Book created = bookService.addBook(book);
         return ResponseEntity.ok(BookDTO.from(created));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<BookDTO> updateBook(@RequestBody Book book, @PathVariable long id) {
-        if (bookService.getBookByID(id) == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            bookService.getBookByID(id);
+        } catch (RuntimeException e) {
+            LOGGER.debug("Book with id {} does not exist", id);
+            throw e;
         }
         book.setId(id);
+        if (book.getAuthors() != null) {
+            assignAuthorsToBook(book);
+        }
         Book updated = bookService.updateBook(book);
         return ResponseEntity.ok(BookDTO.from(updated));
+    }
+
+    private void assignAuthorsToBook(Book book) {
+        authorService.getAuthorsByID(book.getAuthors()
+                        .stream()
+                        .map(Author::getId)
+                        .collect(Collectors.toSet()))
+                .forEach(author -> author.addToBooks(book));
     }
 
     @DeleteMapping("/{id}")

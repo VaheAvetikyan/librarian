@@ -52,8 +52,12 @@ public class Author {
         return books;
     }
 
-    public void setBooks(Set<Book> books) {
-        this.books = books;
+    public void addToBooks(Book book) {
+        this.books.add(book);
+    }
+
+    public void addToBooks(Set<Book> books) {
+        this.books.addAll(books);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.xyz.librarian.repositories.AuthorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AuthorService {
@@ -25,6 +26,10 @@ public class AuthorService {
             throw new RuntimeException("Author with id [" + id + "] does not exist");
         }
         return authorOptional.get();
+    }
+
+    public Iterable<Author> getAuthorsByID(Set<Long> ids) {
+        return authorRepository.findAllById(ids);
     }
 
     public Author addAuthor(Author author) {

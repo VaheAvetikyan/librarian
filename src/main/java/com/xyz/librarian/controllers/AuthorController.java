@@ -1,8 +1,10 @@
 package com.xyz.librarian.controllers;
 
 import com.xyz.librarian.domain.Author;
+import com.xyz.librarian.domain.Book;
 import com.xyz.librarian.dto.AuthorDTO;
 import com.xyz.librarian.services.AuthorService;
+import com.xyz.librarian.services.BookService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,11 @@ public class AuthorController {
     private final Logger LOGGER = LogManager.getLogger(BookController.class);
 
     private final AuthorService authorService;
+    public final BookService bookService;
 
-    public AuthorController(AuthorService authorService) {
+    public AuthorController(AuthorService authorService, BookService bookService) {
         this.authorService = authorService;
+        this.bookService = bookService;
     }
 
     @GetMapping
@@ -45,6 +49,9 @@ public class AuthorController {
 
     @PostMapping
     public ResponseEntity<AuthorDTO> addAuthor(@RequestBody Author author) {
+        if (author.getBooks() != null) {
+            assignBooksToAuthor(author);
+        }
         Author created = authorService.addAuthor(author);
         return ResponseEntity.ok(AuthorDTO.from(created));
     }
@@ -58,8 +65,19 @@ public class AuthorController {
             throw e;
         }
         author.setId(id);
+        if (author.getBooks() != null) {
+            assignBooksToAuthor(author);
+        }
         Author updated = authorService.updateAuthor(author);
         return ResponseEntity.ok(AuthorDTO.from(updated));
+    }
+
+    private void assignBooksToAuthor(Author author) {
+        bookService.getBooksByID(author.getBooks()
+                        .stream()
+                        .map(Book::getId)
+                        .collect(Collectors.toSet()))
+                .forEach(book -> book.addToAuthors(author));
     }
 
     @DeleteMapping("/{id}")
