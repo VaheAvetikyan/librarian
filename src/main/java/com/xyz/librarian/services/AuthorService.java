@@ -1,6 +1,7 @@
 package com.xyz.librarian.services;
 
 import com.xyz.librarian.domain.Author;
+import com.xyz.librarian.exceptions.AuthorNotFoundException;
 import com.xyz.librarian.repositories.AuthorRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class AuthorService {
     public Author getAuthorByID(long id) {
         Optional<Author> authorOptional = authorRepository.findById(id);
         if (authorOptional.isEmpty()) {
-            throw new RuntimeException("Author with id [" + id + "] does not exist");
+            throw new AuthorNotFoundException("Author with id [" + id + "] does not exist");
         }
         return authorOptional.get();
     }
