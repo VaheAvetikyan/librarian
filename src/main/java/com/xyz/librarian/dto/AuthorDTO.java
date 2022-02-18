@@ -1,5 +1,6 @@
 package com.xyz.librarian.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.xyz.librarian.domain.Author;
 
 import java.util.Set;
@@ -9,7 +10,8 @@ public class AuthorDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private Set<BookRecord> bookRecords;
+    @JsonIgnoreProperties(value = "authors")
+    private Set<BookDTO> books;
 
     private AuthorDTO() {
     }
@@ -21,7 +23,7 @@ public class AuthorDTO {
         authorDTO.setLastName(author.getLastName());
         authorDTO.setBooks(author.getBooks()
                 .stream()
-                .map(book -> new BookRecord(book.getId(), book.getTitle(), book.getIsbn()))
+                .map(BookDTO::from)
                 .collect(Collectors.toSet()));
         return authorDTO;
     }
@@ -50,14 +52,11 @@ public class AuthorDTO {
         this.lastName = lastName;
     }
 
-    public Set<BookRecord> getBooks() {
-        return bookRecords;
+    public Set<BookDTO> getBooks() {
+        return books;
     }
 
-    private record BookRecord(Long id, String title, String isbn) {
-    }
-
-    public void setBooks(Set<BookRecord> bookRecords) {
-        this.bookRecords = bookRecords;
+    public void setBooks(Set<BookDTO> bookRecords) {
+        this.books = bookRecords;
     }
 }

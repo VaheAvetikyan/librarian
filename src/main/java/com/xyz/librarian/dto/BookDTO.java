@@ -1,15 +1,18 @@
 package com.xyz.librarian.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.xyz.librarian.domain.Author;
 import com.xyz.librarian.domain.Book;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BookDTO {
     private Long id;
     private String title;
     private String isbn;
-    private Set<AuthorRecord> authors;
+    @JsonIgnoreProperties(value = "books")
+    private Set<Author> authors;
 
     private BookDTO() {
     }
@@ -19,10 +22,7 @@ public class BookDTO {
         bookDTO.setId(book.getId());
         bookDTO.setTitle(book.getTitle());
         bookDTO.setIsbn(book.getIsbn());
-        bookDTO.setAuthors(book.getAuthors()
-                .stream()
-                .map(author -> new AuthorRecord(author.getId(), author.getFirstName(), author.getLastName()))
-                .collect(Collectors.toSet()));
+        bookDTO.setAuthors(book.getAuthors());
         return bookDTO;
     }
 
@@ -50,14 +50,11 @@ public class BookDTO {
         this.isbn = isbn;
     }
 
-    public Set<AuthorRecord> getAuthors() {
+    public Set<Author> getAuthors() {
         return authors;
     }
 
-    private record AuthorRecord(Long id, String firstName, String lastName) {
-    }
-
-    public void setAuthors(Set<AuthorRecord> authors) {
-        this.authors = authors;
+    public void setAuthors(Set<Author> authors) {
+        this.authors = new HashSet<>(authors);
     }
 }
