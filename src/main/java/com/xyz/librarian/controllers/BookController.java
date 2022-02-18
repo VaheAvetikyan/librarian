@@ -33,7 +33,6 @@ public class BookController {
         Iterable<Book> books = bookService.getBooks();
         List<BookDTO> bookDTOList = new ArrayList<>();
         books.forEach(book -> bookDTOList.add(BookDTO.from(book)));
-        bookDTOList.sort(Comparator.comparing(BookDTO::getTitle));
         LOGGER.debug("Books retrieved [{}]",
                 bookDTOList.stream()
                         .map(BookDTO::getTitle)

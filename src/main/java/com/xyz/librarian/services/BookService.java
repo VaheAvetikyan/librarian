@@ -3,6 +3,7 @@ package com.xyz.librarian.services;
 import com.xyz.librarian.domain.Book;
 import com.xyz.librarian.repositories.BookRepository;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,11 +19,11 @@ public class BookService {
     }
 
     public Iterable<Book> getBooks() {
-        return bookRepository.findAll();
+        return bookRepository.findAll(PageRequest.ofSize(10).withSort(Sort.by("title").ascending()));
     }
 
     public Iterable<Book> getBooks(int page, int size) {
-        return bookRepository.findAll(PageRequest.of(page, size));
+        return bookRepository.findAll(PageRequest.of(page, size, Sort.by("title").ascending()));
     }
 
     public Book getBookByID(long id) {
