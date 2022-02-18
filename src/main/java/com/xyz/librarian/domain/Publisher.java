@@ -17,7 +17,7 @@ public class Publisher {
 
     @OneToMany
     @JoinColumn(name = "publisher_id")
-    private Set<Book> books = new HashSet<>();
+    private final Set<Book> books = new HashSet<>();
 
     public Publisher() {
     }
@@ -52,10 +52,6 @@ public class Publisher {
 
     public Set<Book> getBooks() {
         return books;
-    }
-
-    public void setBooks(Set<Book> books) {
-        this.books = books;
     }
 
     @Override
