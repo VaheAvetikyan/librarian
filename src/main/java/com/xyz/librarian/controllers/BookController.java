@@ -2,7 +2,6 @@ package com.xyz.librarian.controllers;
 
 import com.xyz.librarian.domain.Author;
 import com.xyz.librarian.domain.Book;
-import com.xyz.librarian.dto.BookDTO;
 import com.xyz.librarian.services.AuthorService;
 import com.xyz.librarian.services.BookService;
 import org.apache.logging.log4j.LogManager;
@@ -10,9 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,44 +25,31 @@ public class BookController {
     }
 
     @GetMapping
-    public List<BookDTO> getBooks() {
-        Iterable<Book> books = bookService.getBooks();
-        List<BookDTO> bookDTOList = new ArrayList<>();
-        books.forEach(book -> bookDTOList.add(BookDTO.from(book)));
-        bookDTOList.sort(Comparator.comparing(BookDTO::getTitle));
-        LOGGER.debug("Books retrieved [{}]",
-                bookDTOList.stream()
-                        .map(BookDTO::getTitle)
-                        .collect(Collectors.joining(", ")));
-        return bookDTOList;
+    public ResponseEntity<Iterable<Book>> getBooks() {
+        return ResponseEntity.ok(bookService.getBooks());
     }
 
     @GetMapping(params = {"page", "size"})
-    public List<BookDTO> getBooks(@RequestParam("page") int page, @RequestParam("size") int size) {
-        Iterable<Book> books = bookService.getBooks(page, size);
-        List<BookDTO> bookDTOList = new ArrayList<>();
-        books.forEach(book -> bookDTOList.add(BookDTO.from(book)));
-        bookDTOList.sort(Comparator.comparing(BookDTO::getTitle));
-        return bookDTOList;
+    public ResponseEntity<Iterable<Book>> getBooks(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return ResponseEntity.ok(bookService.getBooks(page, size));
     }
 
     @GetMapping("/{id}")
-    public BookDTO getBook(@PathVariable long id) {
-        Book book = bookService.getBookByID(id);
-        return BookDTO.from(book);
+    public ResponseEntity<Book> getBook(@PathVariable long id) {
+        return ResponseEntity.ok(bookService.getBookByID(id));
     }
 
     @PostMapping
-    public ResponseEntity<BookDTO> addBook(@RequestBody Book book) {
+    public ResponseEntity<Book> addBook(@RequestBody Book book) {
         if (book.getAuthors() != null) {
             assignAuthorsToBook(book);
         }
         Book created = bookService.addBook(book);
-        return ResponseEntity.ok(BookDTO.from(created));
+        return ResponseEntity.ok(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookDTO> updateBook(@RequestBody Book book, @PathVariable long id) {
+    public ResponseEntity<Book> updateBook(@RequestBody Book book, @PathVariable long id) {
         try {
             bookService.getBookByID(id);
         } catch (RuntimeException e) {
@@ -78,7 +61,7 @@ public class BookController {
             assignAuthorsToBook(book);
         }
         Book updated = bookService.updateBook(book);
-        return ResponseEntity.ok(BookDTO.from(updated));
+        return ResponseEntity.ok(updated);
     }
 
     private void assignAuthorsToBook(Book book) {

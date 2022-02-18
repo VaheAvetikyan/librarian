@@ -1,5 +1,7 @@
 package com.xyz.librarian.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -14,7 +16,8 @@ public class Author {
     private String firstName;
     private String lastName;
     @ManyToMany(mappedBy = "authors")
-    private Set<Book> books = new HashSet<>();
+    @JsonIgnoreProperties(value = "authors")
+    private final Set<Book> books = new HashSet<>();
 
     public Author() {
     }

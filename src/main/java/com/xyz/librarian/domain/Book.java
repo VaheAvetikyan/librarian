@@ -1,5 +1,7 @@
 package com.xyz.librarian.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,9 +20,11 @@ public class Book {
     @ManyToMany
     @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private Set<Author> authors = new HashSet<>();
+    @JsonIgnoreProperties(value = "books")
+    private final Set<Author> authors = new HashSet<>();
 
     @ManyToOne
+    @JsonIgnoreProperties(value = "books")
     private Publisher publisher;
 
     public Book() {
