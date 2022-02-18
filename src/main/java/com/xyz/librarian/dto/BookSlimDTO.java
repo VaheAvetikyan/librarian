@@ -4,34 +4,27 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.xyz.librarian.domain.Book;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-public class BookDTO {
+public class BookSlimDTO {
     private Long id;
     private String title;
     private String isbn;
-    @JsonIgnoreProperties(value = "books")
-    private Set<AuthorSlimDTO> authors;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(value = "books")
     private PublisherSlimDTO publisher;
 
-    private BookDTO() {
+    private BookSlimDTO() {
     }
 
-    public static BookDTO from(Book book) {
-        BookDTO bookDTO = new BookDTO();
-        bookDTO.setId(book.getId());
-        bookDTO.setTitle(book.getTitle());
-        bookDTO.setIsbn(book.getIsbn());
-        bookDTO.setAuthors(book.getAuthors().stream().map(AuthorSlimDTO::from).collect(Collectors.toSet()));
+    public static BookSlimDTO from(Book book) {
+        BookSlimDTO bookSlimDTO = new BookSlimDTO();
+        bookSlimDTO.setId(book.getId());
+        bookSlimDTO.setTitle(book.getTitle());
+        bookSlimDTO.setIsbn(book.getIsbn());
         if (book.getPublisher() != null) {
-            bookDTO.setPublisher(PublisherSlimDTO.from(book.getPublisher()));
+            bookSlimDTO.setPublisher(PublisherSlimDTO.from(book.getPublisher()));
         }
-        return bookDTO;
+        return bookSlimDTO;
     }
 
     public Long getId() {
@@ -64,13 +57,5 @@ public class BookDTO {
 
     public void setPublisher(PublisherSlimDTO publisher) {
         this.publisher = publisher;
-    }
-
-    public Set<AuthorSlimDTO> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(Set<AuthorSlimDTO> authors) {
-        this.authors = new HashSet<>(authors);
     }
 }

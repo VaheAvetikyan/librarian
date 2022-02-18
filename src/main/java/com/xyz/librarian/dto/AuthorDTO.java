@@ -11,7 +11,7 @@ public class AuthorDTO {
     private String firstName;
     private String lastName;
     @JsonIgnoreProperties(value = "authors")
-    private Set<BookDTO> books;
+    private Set<BookSlimDTO> books;
 
     private AuthorDTO() {
     }
@@ -23,7 +23,7 @@ public class AuthorDTO {
         authorDTO.setLastName(author.getLastName());
         authorDTO.setBooks(author.getBooks()
                 .stream()
-                .map(BookDTO::from)
+                .map(BookSlimDTO::from)
                 .collect(Collectors.toSet()));
         return authorDTO;
     }
@@ -52,11 +52,11 @@ public class AuthorDTO {
         this.lastName = lastName;
     }
 
-    public Set<BookDTO> getBooks() {
+    public Set<BookSlimDTO> getBooks() {
         return books;
     }
 
-    public void setBooks(Set<BookDTO> bookRecords) {
+    public void setBooks(Set<BookSlimDTO> bookRecords) {
         this.books = bookRecords;
     }
 }
