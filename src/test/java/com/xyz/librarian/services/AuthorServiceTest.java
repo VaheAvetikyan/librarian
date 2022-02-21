@@ -26,22 +26,27 @@ class AuthorServiceTest {
     @Mock
     AuthorRepository authorRepository;
 
+    Author oscarWild;
+    Author isaacAsimov;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        oscarWild = new Author();
+        oscarWild.setId(1L);
+        oscarWild.setFirstName("Oscar");
+        oscarWild.setLastName("Wild");
+        isaacAsimov = new Author();
+        isaacAsimov.setId(2L);
+        isaacAsimov.setFirstName("Isaac");
+        isaacAsimov.setLastName("Asimov");
     }
 
     @Test
     void getAuthors() {
-        Author authorEntity1 = new Author();
-        authorEntity1.setId(1L);
-        authorEntity1.setFirstName("Oscar");
-        authorEntity1.setLastName("Wild");
-        Author authorEntity2 = new Author();
-        authorEntity2.setId(2L);
-        authorEntity2.setFirstName("Isaac");
-        authorEntity2.setLastName("Asimov");
-        Iterable<Author> authorEntities = List.of(authorEntity1, authorEntity2);
+
+        Iterable<Author> authorEntities = List.of(oscarWild, isaacAsimov);
         when(authorRepository.findAllById(anySet())).thenReturn(authorEntities);
 
         Iterable<Author> authors = authorService.getAuthorsByID(Set.of(1L));
@@ -57,11 +62,7 @@ class AuthorServiceTest {
 
     @Test
     void getAuthorByID() {
-        Author authorEntity = new Author();
-        authorEntity.setId(1L);
-        authorEntity.setFirstName("Oscar");
-        authorEntity.setLastName("Wild");
-        when(authorRepository.findById(anyLong())).thenReturn(Optional.of(authorEntity));
+        when(authorRepository.findById(anyLong())).thenReturn(Optional.of(oscarWild));
 
         Author author = authorService.getAuthorByID(1L);
 
@@ -80,41 +81,28 @@ class AuthorServiceTest {
 
     @Test
     void getAuthorsByID() {
-        Author authorEntity1 = new Author();
-        authorEntity1.setId(1L);
-        authorEntity1.setFirstName("Oscar");
-        authorEntity1.setLastName("Wild");
-        Author authorEntity2 = new Author();
-        authorEntity2.setId(2L);
-        authorEntity2.setFirstName("Isaac");
-        authorEntity2.setLastName("Asimov");
-        Iterable<Author> authorEntities = List.of(authorEntity1, authorEntity2);
+        Iterable<Author> authorEntities = List.of(oscarWild, isaacAsimov);
         when(authorRepository.findAllById(anySet())).thenReturn(authorEntities);
 
         Iterable<Author> authors = authorService.getAuthorsByID(Set.of(1L, 2L));
 
         Iterator<Author> it = authors.iterator();
-        Author oscarWild = it.next();
-        assertNotNull(oscarWild);
-        assertEquals("Oscar", oscarWild.getFirstName());
-        assertEquals("Wild", oscarWild.getLastName());
-        Author isaacAsimov = it.next();
-        assertNotNull(isaacAsimov);
-        assertEquals("Isaac", isaacAsimov.getFirstName());
-        assertEquals("Isaac", isaacAsimov.getFirstName());
+        Author author1 = it.next();
+        assertNotNull(author1);
+        assertEquals("Oscar", author1.getFirstName());
+        assertEquals("Wild", author1.getLastName());
+        Author author2 = it.next();
+        assertNotNull(author2);
+        assertEquals("Isaac", author2.getFirstName());
+        assertEquals("Isaac", author2.getFirstName());
         assertFalse(it.hasNext());
     }
 
     @Test
     void addAuthor() {
-        Author authorEntity = new Author();
-        authorEntity.setId(1L);
-        authorEntity.setFirstName("Oscar");
-        authorEntity.setLastName("Wild");
+        when(authorRepository.save(any())).thenReturn(oscarWild);
 
-        when(authorRepository.save(any())).thenReturn(authorEntity);
-
-        Author author = authorService.addAuthor(authorEntity);
+        Author author = authorService.addAuthor(oscarWild);
         assertNotNull(author);
         assertEquals(1L, author.getId());
         assertEquals("Oscar", author.getFirstName());
