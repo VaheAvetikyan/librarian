@@ -13,23 +13,28 @@ public class BookDTO {
     private String title;
     private String isbn;
     @JsonIgnoreProperties(value = "books")
-    private Set<AuthorSlimDTO> authors;
+    private Set<AuthorDTO> authors;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(value = "books")
-    private PublisherSlimDTO publisher;
+    private PublisherDTO publisher;
 
     private BookDTO() {
     }
 
     public static BookDTO from(Book book) {
+        BookDTO bookDTO = slimObject(book);
+        bookDTO.setAuthors(book.getAuthors().stream().map(AuthorDTO::slimObject).collect(Collectors.toSet()));
+        return bookDTO;
+    }
+
+    static BookDTO slimObject(Book book) {
         BookDTO bookDTO = new BookDTO();
         bookDTO.setId(book.getId());
         bookDTO.setTitle(book.getTitle());
         bookDTO.setIsbn(book.getIsbn());
-        bookDTO.setAuthors(book.getAuthors().stream().map(AuthorSlimDTO::from).collect(Collectors.toSet()));
         if (book.getPublisher() != null) {
-            bookDTO.setPublisher(PublisherSlimDTO.from(book.getPublisher()));
+            bookDTO.setPublisher(PublisherDTO.slimObject(book.getPublisher()));
         }
         return bookDTO;
     }
@@ -58,19 +63,19 @@ public class BookDTO {
         this.isbn = isbn;
     }
 
-    public PublisherSlimDTO getPublisher() {
+    public PublisherDTO getPublisher() {
         return publisher;
     }
 
-    public void setPublisher(PublisherSlimDTO publisher) {
+    public void setPublisher(PublisherDTO publisher) {
         this.publisher = publisher;
     }
 
-    public Set<AuthorSlimDTO> getAuthors() {
+    public Set<AuthorDTO> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(Set<AuthorSlimDTO> authors) {
+    public void setAuthors(Set<AuthorDTO> authors) {
         this.authors = new HashSet<>(authors);
     }
 }

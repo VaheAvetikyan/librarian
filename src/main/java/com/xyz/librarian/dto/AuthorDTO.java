@@ -11,20 +11,25 @@ public class AuthorDTO {
     private String firstName;
     private String lastName;
     @JsonIgnoreProperties(value = "authors")
-    private Set<BookSlimDTO> books;
+    private Set<BookDTO> books;
 
     private AuthorDTO() {
     }
 
     public static AuthorDTO from(Author author) {
+        AuthorDTO authorDTO = slimObject(author);
+        authorDTO.setBooks(author.getBooks()
+                .stream()
+                .map(BookDTO::slimObject)
+                .collect(Collectors.toSet()));
+        return authorDTO;
+    }
+
+    static AuthorDTO slimObject(Author author) {
         AuthorDTO authorDTO = new AuthorDTO();
         authorDTO.setId(author.getId());
         authorDTO.setFirstName(author.getFirstName());
         authorDTO.setLastName(author.getLastName());
-        authorDTO.setBooks(author.getBooks()
-                .stream()
-                .map(BookSlimDTO::from)
-                .collect(Collectors.toSet()));
         return authorDTO;
     }
 
@@ -52,11 +57,11 @@ public class AuthorDTO {
         this.lastName = lastName;
     }
 
-    public Set<BookSlimDTO> getBooks() {
+    public Set<BookDTO> getBooks() {
         return books;
     }
 
-    public void setBooks(Set<BookSlimDTO> bookRecords) {
+    public void setBooks(Set<BookDTO> bookRecords) {
         this.books = bookRecords;
     }
 }
