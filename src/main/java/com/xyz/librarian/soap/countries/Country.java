@@ -8,6 +8,10 @@
 
 package com.xyz.librarian.soap.countries;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -16,9 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for Country complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Country"&gt;
  *   &lt;complexContent&gt;
@@ -34,8 +38,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Country", propOrder = {
@@ -45,9 +49,12 @@ import javax.xml.bind.annotation.XmlType;
     "capital",
     "population"
 })
+@Entity
 public class Country {
 
-    protected int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
     @XmlElement(required = true)
     protected String name;
     @XmlElement(required = true)
@@ -58,27 +65,27 @@ public class Country {
 
     /**
      * Gets the value of the id property.
-     * 
+     *
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     /**
      * Sets the value of the id property.
-     * 
+     *
      */
-    public void setId(int value) {
+    public void setId(long value) {
         this.id = value;
     }
 
     /**
      * Gets the value of the name property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getName() {
         return name;
@@ -86,11 +93,11 @@ public class Country {
 
     /**
      * Sets the value of the name property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setName(String value) {
         this.name = value;
@@ -98,11 +105,11 @@ public class Country {
 
     /**
      * Gets the value of the isoCode property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getIsoCode() {
         return isoCode;
@@ -110,11 +117,11 @@ public class Country {
 
     /**
      * Sets the value of the isoCode property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setIsoCode(String value) {
         this.isoCode = value;
@@ -122,11 +129,11 @@ public class Country {
 
     /**
      * Gets the value of the capital property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getCapital() {
         return capital;
@@ -134,11 +141,11 @@ public class Country {
 
     /**
      * Sets the value of the capital property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setCapital(String value) {
         this.capital = value;
@@ -146,7 +153,7 @@ public class Country {
 
     /**
      * Gets the value of the population property.
-     * 
+     *
      */
     public int getPopulation() {
         return population;
@@ -154,7 +161,7 @@ public class Country {
 
     /**
      * Sets the value of the population property.
-     * 
+     *
      */
     public void setPopulation(int value) {
         this.population = value;
