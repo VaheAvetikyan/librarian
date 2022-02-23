@@ -64,7 +64,6 @@
                             <goal>xsdtojava</goal>
                         </goals>
                         <configuration>
-                            <sourceRoot>${project.basedir}/src/main/java</sourceRoot>
                             <xsdOptions>
                                 <xsdOption>
                                     <xsd>${project.basedir}/src/main/resources/countries.xsd</xsd>
