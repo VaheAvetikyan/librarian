@@ -90,13 +90,13 @@ class AuthorControllerTest {
     @Test
     void getAuthor() {
         when(authorService.getAuthorByID(anyLong())).thenReturn(oscarWild);
-        AuthorDTO authorRest = authorController.getAuthor(1);
+        ResponseEntity<AuthorDTO> responseEntity = authorController.getAuthor(1);
 
-        assertNotNull(authorRest);
-        assertEquals(1, authorRest.getId());
-        assertEquals(oscarWildDTO.getFirstName(), authorRest.getFirstName());
-        assertEquals(oscarWildDTO.getLastName(), authorRest.getLastName());
-        assertEquals(oscarWildDTO.getBooks().size(), authorRest.getBooks().size());
+        assertNotNull(responseEntity);
+        assertEquals(1, Objects.requireNonNull(responseEntity.getBody()).getId());
+        assertEquals(oscarWildDTO.getFirstName(), responseEntity.getBody().getFirstName());
+        assertEquals(oscarWildDTO.getLastName(), responseEntity.getBody().getLastName());
+        assertEquals(oscarWildDTO.getBooks().size(), responseEntity.getBody().getBooks().size());
     }
 
     @Test
