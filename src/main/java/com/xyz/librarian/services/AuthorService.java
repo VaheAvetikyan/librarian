@@ -1,20 +1,24 @@
 package com.xyz.librarian.services;
 
 import com.xyz.librarian.domain.Author;
+import com.xyz.librarian.domain.Book;
 import com.xyz.librarian.exceptions.AuthorNotFoundException;
 import com.xyz.librarian.repositories.AuthorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    public final BookService bookService;
 
-    public AuthorService(AuthorRepository authorRepository) {
+    public AuthorService(AuthorRepository authorRepository, BookService bookService) {
         this.authorRepository = authorRepository;
+        this.bookService = bookService;
     }
 
     public Iterable<Author> getAuthors() {
@@ -34,14 +38,28 @@ public class AuthorService {
     }
 
     public Author addAuthor(Author author) {
+        if (author.getBooks() != null) {
+            assignBooksToAuthor(author);
+        }
         return authorRepository.save(author);
     }
 
     public Author updateAuthor(Author author) {
+        if (author.getBooks() != null) {
+            assignBooksToAuthor(author);
+        }
         return authorRepository.save(author);
     }
 
     public void removeAuthor(Author author) {
         authorRepository.delete(author);
+    }
+
+    private void assignBooksToAuthor(Author author) {
+        bookService.getBooksByID(author.getBooks()
+                        .stream()
+                        .map(Book::getId)
+                        .collect(Collectors.toSet()))
+                .forEach(book -> book.addToAuthors(author));
     }
 }
