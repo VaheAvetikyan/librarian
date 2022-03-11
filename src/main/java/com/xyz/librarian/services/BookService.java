@@ -2,6 +2,7 @@ package com.xyz.librarian.services;
 
 import com.xyz.librarian.domain.Author;
 import com.xyz.librarian.domain.Book;
+import com.xyz.librarian.repositories.AuthorRepository;
 import com.xyz.librarian.repositories.BookRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -15,11 +16,11 @@ import java.util.stream.Collectors;
 public class BookService {
 
     public final BookRepository bookRepository;
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
-    public BookService(BookRepository bookRepository, AuthorService authorService) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
-        this.authorService = authorService;
+        this.authorRepository = authorRepository;
     }
 
     public Iterable<Book> getBooks() {
@@ -61,7 +62,7 @@ public class BookService {
     }
 
     private void assignAuthorsToBook(Book book) {
-        authorService.getAuthorsByID(book.getAuthors()
+        authorRepository.findAllById(book.getAuthors()
                         .stream()
                         .map(Author::getId)
                         .collect(Collectors.toSet()))
